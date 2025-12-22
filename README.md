@@ -20,7 +20,7 @@ Built with **FastAPI** (Backend) and **React** (Frontend).
 
 This project is configured for **one-click deployment** on Render.
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Mortal-24/cse)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Mortal-24/demo)
 
 ### How to Deploy
 1.  Click the **Deploy to Render** button above.
