@@ -20,7 +20,6 @@ export default function Sender() {
 
   // ✅ Add receiver with keys
   const [activeUsers, setActiveUsers] = useState([]);
-  const [inviteLink, setInviteLink] = useState("");
 
   const getApiUrl = () => {
     let url = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
@@ -52,14 +51,7 @@ export default function Sender() {
     return () => clearInterval(interval);
   }, [username]);
 
-  // Generate Invite Link
-  const generateInvite = () => {
-    const randomId = "guest_" + Math.floor(Math.random() * 10000);
-    // Base URL is the current frontend URL (window.location.origin)
-    // Link format: /receiver/guest_1234
-    const link = `${window.location.origin}/receiver/${randomId}`;
-    setInviteLink(link);
-  };
+
 
   // Auto-fill username from list
   const fillUser = (u) => {
@@ -139,30 +131,23 @@ export default function Sender() {
       <aside className="sidebar">
         <h3>Receivers</h3>
 
-        {/* 🟢 Invite Link Generator */}
-        <div className="invite-section">
-          <button onClick={generateInvite} className="secondary-btn">🔗 Generate Invite Link</button>
-          {inviteLink && (
-            <div className="invite-box">
-              <input readOnly value={inviteLink} />
-              <button onClick={() => navigator.clipboard.writeText(inviteLink)}>Copy</button>
-            </div>
-          )}
-        </div>
+        {/* 🟢 Online Users List (Lobby) */}
+        <div className="active-users">
+          <h3>👥 Online Lobby</h3>
+          <p className="helper-text">Ask receivers to login with their name. Click to add them.</p>
 
-        {/* 🟢 Online Users List */}
-        {activeUsers.length > 0 && (
-          <div className="active-users">
-            <h4>🟢 Online Now</h4>
+          {activeUsers.length === 0 ? (
+            <div className="empty-state">Waiting for users to join...</div>
+          ) : (
             <ul>
               {activeUsers.map(u => (
                 <li key={u} onClick={() => fillUser(u)} className="active-user-item">
-                  {u}
+                  <span className="status-dot">●</span> {u}
                 </li>
               ))}
             </ul>
-          </div>
-        )}
+          )}
+        </div>
 
         <div className="divider"></div>
 

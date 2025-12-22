@@ -23,7 +23,7 @@
   flex-direction: column;
   gap: 15px;
   overflow-y: auto;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar h3 {
@@ -94,7 +94,7 @@
   color: white;
   font-size: 18px;
   font-weight: 600;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .chat-body {
@@ -147,7 +147,7 @@
   background: #fff;
   padding: 15px;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   max-width: 70%;
   word-wrap: break-word;
 }
@@ -251,73 +251,60 @@ pre {
 
 /* Sender.css Additions */
 
-.invite-section {
+/* Lobby Styles & Sender Updates */
+.active-users {
   background: rgba(255, 255, 255, 0.05);
-  padding: 10px;
+  padding: 1rem;
   border-radius: 8px;
+  margin-bottom: 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.secondary-btn {
-  background: transparent !important;
-  border: 1px solid #00c6ff !important;
-  font-size: 13px;
+.active-users h3 {
+  margin-top: 0;
+  margin-bottom: 5px;
+  font-size: 1.1rem;
+  color: #a6d8ff;
 }
 
-.invite-box {
-  display: flex;
-  gap: 5px;
-  margin-top: 5px;
-}
-
-.invite-box input {
-  flex: 1;
-  width: 100%;
-  font-size: 11px;
-  padding: 5px;
-  color: #333;
-}
-
-.invite-box button {
-  padding: 5px 10px;
-  font-size: 11px;
-}
-
-.active-users {
+.helper-text {
+  font-size: 0.8rem;
+  color: #888;
   margin-bottom: 15px;
 }
 
-.active-users h4 {
-  font-size: 12px;
-  text-transform: uppercase;
-  color: #00ff88;
-  margin: 0 0 5px 0;
-  letter-spacing: 1px;
+.empty-state {
+  font-style: italic;
+  color: #666;
+  text-align: center;
+  padding: 10px;
 }
 
 .active-user-item {
-  cursor: pointer;
-  padding: 5px 8px;
-  border-radius: 4px;
-  background: rgba(0, 255, 136, 0.1);
-  color: #00ff88;
-  margin-bottom: 4px;
-  transition: 0.2s;
   display: flex;
   align-items: center;
-}
-
-.active-user-item::before {
-  content: "•";
-  margin-right: 6px;
-  font-size: 18px;
+  padding: 8px 12px;
+  background: rgba(0, 255, 128, 0.1);
+  margin-bottom: 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
 }
 
 .active-user-item:hover {
-  background: rgba(0, 255, 136, 0.2);
+  background: rgba(0, 255, 128, 0.2);
+  border-color: #00ff80;
+  transform: translateX(4px);
+}
+
+.status-dot {
+  color: #00ff80;
+  font-size: 0.8rem;
+  margin-right: 8px;
 }
 
 .divider {
-  border-top: 1px solid rgba(255,255,255,0.1);
-  margin: 10px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 15px 0;
 }
