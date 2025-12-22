@@ -1,0 +1,74 @@
+/* Full-page login wrapper */
+.login-page {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Video background */
+.bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1; /* Behind login form */
+}
+
+/* Login form container */
+.login-container {
+  position: relative;
+  z-index: 1;
+  width: 400px;
+  padding: 30px;
+  text-align: center;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.6); /* Semi-transparent overlay */
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+/* Title & subtitle */
+.login-container h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.login-container .subtitle {
+  font-size: 14px;
+  color: #ddd;
+  margin-bottom: 20px;
+}
+
+/* Inputs & select */
+.login-container input,
+.login-container select {
+ width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 15px;
+  border-radius: 15px;
+  border: none;
+}
+
+
+/* Button */
+.login-container button {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #4a6cf7;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.login-container button:hover {
+  background-color: #3a5be0;
+}

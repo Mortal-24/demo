@@ -1,0 +1,7 @@
+body { margin: 0; background: #f7fafc; color: #111827; }
+input, textarea, select, button { font-family: inherit; font-size: 14px; }
+.container { background: white; padding: 18px; border-radius: 8px; box-shadow: 0 2px 8px rgba(12,12,12,0.06); }
+.user-row { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+.user-row input[type="text"] { width:160px; }
+.card { margin-top:16px; padding:12px; border-radius:6px; background:#fff; border:1px solid #e6edf3; }
+.small { font-size: 13px; color:#555; }

@@ -1,0 +1,29 @@
+services:
+  # Python Backend
+  - type: web
+    name: cse-backend
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    plan: free
+    envVars:
+      - key: PORT
+        value: 10000
+
+  # React Frontend (Hosted as Web Service)
+  - type: web
+    name: cse-frontend
+    env: node
+    rootDir: secret-sharing-ui
+    buildCommand: CI=false npm install && npm run build
+    startCommand: npx serve -s build -p $PORT
+    plan: free
+    envVars:
+      - key: NODE_VERSION
+        value: 20.10.0
+      - key: REACT_APP_API_URL
+        fromService:
+          type: web
+          name: cse-backend
+          property: host
