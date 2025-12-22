@@ -248,3 +248,76 @@ pre {
     max-width: 90%;
   }
 }
+
+/* Sender.css Additions */
+
+.invite-section {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.secondary-btn {
+  background: transparent !important;
+  border: 1px solid #00c6ff !important;
+  font-size: 13px;
+}
+
+.invite-box {
+  display: flex;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.invite-box input {
+  flex: 1;
+  width: 100%;
+  font-size: 11px;
+  padding: 5px;
+  color: #333;
+}
+
+.invite-box button {
+  padding: 5px 10px;
+  font-size: 11px;
+}
+
+.active-users {
+  margin-bottom: 15px;
+}
+
+.active-users h4 {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #00ff88;
+  margin: 0 0 5px 0;
+  letter-spacing: 1px;
+}
+
+.active-user-item {
+  cursor: pointer;
+  padding: 5px 8px;
+  border-radius: 4px;
+  background: rgba(0, 255, 136, 0.1);
+  color: #00ff88;
+  margin-bottom: 4px;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.active-user-item::before {
+  content: "•";
+  margin-right: 6px;
+  font-size: 18px;
+}
+
+.active-user-item:hover {
+  background: rgba(0, 255, 136, 0.2);
+}
+
+.divider {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin: 10px 0;
+}

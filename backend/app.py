@@ -25,6 +25,13 @@ def read_root():
     return {"status": "ok", "message": "Secret Sharing API is running. Use /multi-encrypt or Connect via WebSocket."}
 
 
+# ✅ Active Users API
+@app.get("/active-users")
+def get_active_users():
+    """Returns a list of connected usernames."""
+    return {"users": list(connected_users.keys())}
+
+
 # ✅ CORS (Fixed: wildcard origin cannot be combined with credentials=True)
 app.add_middleware(
     CORSMiddleware,

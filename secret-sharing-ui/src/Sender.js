@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Sender.css";
 
 export default function Sender() {
@@ -19,6 +19,52 @@ export default function Sender() {
   const [result, setResult] = useState([]);
 
   // ✅ Add receiver with keys
+  const [activeUsers, setActiveUsers] = useState([]);
+  const [inviteLink, setInviteLink] = useState("");
+
+  const getApiUrl = () => {
+    let url = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
+    if (!url.includes("localhost") && !url.includes(".") && !url.includes(":")) {
+      url += ".onrender.com";
+    }
+    return url.startsWith("http") ? url : `https://${url}`;
+  };
+
+  // Poll for active users
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch(`${getApiUrl()}/active-users`);
+        const data = await res.json();
+        // Filter out self and nulls
+        const others = data.users.filter(u => u !== username.toLowerCase());
+        setActiveUsers(others);
+      } catch (e) {
+        console.error("Failed to fetch active users", e);
+      }
+    };
+
+    // Initial fetch
+    fetchUsers();
+
+    // Poll every 5s
+    const interval = setInterval(fetchUsers, 5000);
+    return () => clearInterval(interval);
+  }, [username]);
+
+  // Generate Invite Link
+  const generateInvite = () => {
+    const randomId = "guest_" + Math.floor(Math.random() * 10000);
+    // Base URL is the current frontend URL (window.location.origin)
+    // Link format: /receiver/guest_1234
+    const link = `${window.location.origin}/receiver/${randomId}`;
+    setInviteLink(link);
+  };
+
+  // Auto-fill username from list
+  const fillUser = (u) => {
+    setUsername(u);
+  };
   const addUser = () => {
     if (!username) return;
 
@@ -61,7 +107,6 @@ export default function Sender() {
 
     const getApiUrl = () => {
       let url = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
-      // Fix for Render potential internal hostnames
       if (!url.includes("localhost") && !url.includes(".") && !url.includes(":")) {
         url += ".onrender.com";
       }
@@ -93,6 +138,33 @@ export default function Sender() {
     <div className="app">
       <aside className="sidebar">
         <h3>Receivers</h3>
+
+        {/* 🟢 Invite Link Generator */}
+        <div className="invite-section">
+          <button onClick={generateInvite} className="secondary-btn">🔗 Generate Invite Link</button>
+          {inviteLink && (
+            <div className="invite-box">
+              <input readOnly value={inviteLink} />
+              <button onClick={() => navigator.clipboard.writeText(inviteLink)}>Copy</button>
+            </div>
+          )}
+        </div>
+
+        {/* 🟢 Online Users List */}
+        {activeUsers.length > 0 && (
+          <div className="active-users">
+            <h4>🟢 Online Now</h4>
+            <ul>
+              {activeUsers.map(u => (
+                <li key={u} onClick={() => fillUser(u)} className="active-user-item">
+                  {u}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div className="divider"></div>
 
         <input
           placeholder="Username"
