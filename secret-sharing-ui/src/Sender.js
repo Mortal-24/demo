@@ -60,7 +60,11 @@ export default function Sender() {
     };
 
     const getApiUrl = () => {
-      const url = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
+      let url = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
+      // Fix for Render potential internal hostnames
+      if (!url.includes("localhost") && !url.includes(".") && !url.includes(":")) {
+        url += ".onrender.com";
+      }
       return url.startsWith("http") ? url : `https://${url}`;
     };
 

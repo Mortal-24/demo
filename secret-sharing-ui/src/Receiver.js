@@ -13,6 +13,12 @@ export default function Receiver() {
     const getWsUrl = () => {
       if (process.env.REACT_APP_WS_URL) return process.env.REACT_APP_WS_URL;
       let apiUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
+
+      // Fix for Render potential internal hostnames
+      if (!apiUrl.includes("localhost") && !apiUrl.includes(".") && !apiUrl.includes(":")) {
+        apiUrl += ".onrender.com";
+      }
+
       if (!apiUrl.startsWith("http")) {
         apiUrl = `https://${apiUrl}`;
       }
