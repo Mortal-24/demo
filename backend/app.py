@@ -1,5 +1,6 @@
 import json
 import math
+import uuid
 from typing import Dict, List, Optional
 from collections import Counter
 
@@ -49,6 +50,16 @@ NULL = "\0"
 connected_users: Dict[str, WebSocket] = {}
 pending_shares: Dict[str, List[dict]] = {}
 
+# Session storage: session_id -> { "participants": [username], "shares": [ {user, share, ciphertext, entropy} ] }
+reconstruction_sessions: Dict[str, dict] = {}
+
+async def broadcast_to_session(session_id: str, payload: dict):
+    session = reconstruction_sessions.get(session_id)
+    if not session:
+        return
+    for username in session["participants"]:
+        await send_to_user(username, payload)
+
 async def send_to_user(username: str, payload: dict):
     username = username.lower()
     print(f"[DEBUG] Attempting to send to {username}")
@@ -81,7 +92,40 @@ async def websocket_endpoint(websocket: WebSocket, username: str):
 
     try:
         while True:
-            await websocket.receive_text()
+            data = await websocket.receive_text()
+            try:
+                msg = json.loads(data)
+                mtype = msg.get("type")
+                
+                if mtype == "join_session":
+                    sid = msg.get("session_id")
+                    if sid in reconstruction_sessions:
+                        if username not in reconstruction_sessions[sid]["participants"]:
+                            reconstruction_sessions[sid]["participants"].append(username)
+                        # Sync current state to the new joiner
+                        await websocket.send_text(json.dumps({
+                            "type": "session_update",
+                            "session_id": sid,
+                            "data": reconstruction_sessions[sid]
+                        }))
+                
+                elif mtype == "submit_share":
+                    sid = msg.get("session_id")
+                    share_data = msg.get("share_data")
+                    if sid in reconstruction_sessions:
+                        # Append if not already there (simple check)
+                        existing = [s["user"] for s in reconstruction_sessions[sid]["shares"]]
+                        if share_data["user"] not in existing:
+                            reconstruction_sessions[sid]["shares"].append(share_data)
+                        
+                        await broadcast_to_session(sid, {
+                            "type": "session_update",
+                            "session_id": sid,
+                            "data": reconstruction_sessions[sid]
+                        })
+
+            except Exception as e:
+                print(f"[ERROR] WS msg processing error: {e}")
     except WebSocketDisconnect:
         connected_users.pop(username, None)
 
@@ -137,6 +181,13 @@ class ReconstructRequest(BaseModel):
 async def multi_encrypt(req: MultiEncryptRequest):
     if not req.users:
         raise HTTPException(status_code=400, detail="No users provided")
+
+    session_id = str(uuid.uuid4())[:8]
+    reconstruction_sessions[session_id] = {
+        "participants": [],
+        "shares": [],
+        "total_expected": len(req.users)
+    }
 
     shares = split_secret(req.message, len(req.users))
 
@@ -203,10 +254,12 @@ async def multi_encrypt(req: MultiEncryptRequest):
 
         await send_to_user(user.id, {
             "type": "share",
+            "session_id": session_id,
             "data": payload
         })
 
     return {
+        "session_id": session_id,
         "total_users": len(req.users),
         "results": results
     }
