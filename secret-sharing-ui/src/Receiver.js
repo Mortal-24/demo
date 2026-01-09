@@ -94,7 +94,8 @@ export default function Receiver() {
           user: username,
           plaintext: shareData.plaintext,
           ciphertext: shareData.ciphertext,
-          entropy: shareData.entropy
+          entropy: shareData.entropy,
+          index: shareData.index
         }
       }));
     }
@@ -104,8 +105,10 @@ export default function Receiver() {
     const session = sessions[sid];
     if (!session) return;
 
-    // Sort shares if needed, but for now just join
-    const shares = session.shares.map(s => s.plaintext);
+    // Sort shares by their original index to ensure correct reconstruction order
+    const shares = [...session.shares]
+      .sort((a, b) => a.index - b.index)
+      .map(s => s.plaintext);
 
     try {
       const apiUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";

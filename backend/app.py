@@ -205,7 +205,8 @@ async def multi_encrypt(req: MultiEncryptRequest):
         payload = {
             "user": user.id,
             "cipher": user.cipher,
-            "share": share.replace(NULL, "")
+            "share": share.replace(NULL, ""),
+            "index": i
         }
 
         try:
