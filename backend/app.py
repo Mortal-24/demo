@@ -170,6 +170,7 @@ class PerUserSpec(BaseModel):
 class MultiEncryptRequest(BaseModel):
     message: str
     users: List[PerUserSpec]
+    split_size: Optional[int] = None
 
 class ReconstructRequest(BaseModel):
     shares: List[str]
@@ -189,7 +190,8 @@ async def multi_encrypt(req: MultiEncryptRequest):
         "total_expected": len(req.users)
     }
 
-    shares = split_secret(req.message, len(req.users))
+    num_splits = req.split_size if req.split_size is not None else len(req.users)
+    shares = split_secret(req.message, num_splits)
 
     caesar = CaesarCipher()
     affine = AffineCipher()
