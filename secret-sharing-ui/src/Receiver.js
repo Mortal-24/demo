@@ -101,27 +101,16 @@ export default function Receiver() {
     }
   };
 
-  const reconstructMessage = async (sid) => {
+  const reconstructMessage = (sid) => {
     const session = sessions[sid];
     if (!session) return;
 
     // Sort shares by their original index to ensure correct reconstruction order
-    const shares = [...session.shares]
-      .sort((a, b) => a.index - b.index)
-      .map(s => s.plaintext);
+    const sortedShares = [...session.shares]
+      .sort((a, b) => a.index - b.index);
 
-    try {
-      const apiUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
-      const res = await fetch(`${apiUrl}/reconstruct`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ shares })
-      });
-      const data = await res.json();
-      setReconstructed(prev => ({ ...prev, [sid]: data.reconstructed_message }));
-    } catch (e) {
-      console.error("Reconstruction failed", e);
-    }
+    const message = sortedShares.map(s => s.plaintext).join("");
+    setReconstructed(prev => ({ ...prev, [sid]: message }));
   };
 
   const getStrongestShare = (shares) => {
@@ -176,7 +165,7 @@ export default function Receiver() {
                 const isStrongest = strongest && strongest.user === s.user;
                 return (
                   <div key={idx} className={`pooled-share-item ${isStrongest ? 'strongest' : ''}`}>
-                    <b>{s.user}</b>: {s.plaintext}
+                    <small className="index-badge">#{s.index}</small> <b>{s.user}</b>: {s.plaintext}
                     {isStrongest && <span className="badge">Strongest (Entropy: {s.entropy})</span>}
                   </div>
                 );
