@@ -215,6 +215,8 @@ class PlayFair:
 # =======================
 class RailFence:
     def encrypt(self, plaintext, key):
+        plaintext = plaintext.replace(" ", "")  # remove spaces
+
         rail = [['\n'] * len(plaintext) for _ in range(key)]
         row, col = 0, 0
         dir_down = False
@@ -240,7 +242,7 @@ class RailFence:
         row, col = 0, 0
         dir_down = False
 
-        for i in range(len(ciphertext)):
+        for _ in range(len(ciphertext)):
             if row == 0 or row == key - 1:
                 dir_down = not dir_down
             rail[row][col] = '*'
@@ -258,7 +260,7 @@ class RailFence:
         row, col = 0, 0
         dir_down = False
 
-        for i in range(len(ciphertext)):
+        for _ in range(len(ciphertext)):
             if row == 0 or row == key - 1:
                 dir_down = not dir_down
             result.append(rail[row][col])
