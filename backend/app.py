@@ -113,9 +113,10 @@ async def websocket_endpoint(websocket: WebSocket, username: str):
                     sid = msg.get("session_id")
                     share_data = msg.get("share_data")
                     if sid in reconstruction_sessions:
-                        # Append if not already there (simple check)
-                        existing = [s["user"] for s in reconstruction_sessions[sid]["shares"]]
-                        if share_data["user"] not in existing:
+                        # Append if this specific share content is not already there
+                        # A user might have multiple shares for the same session now.
+                        existing_shares = [s["ciphertext"] for s in reconstruction_sessions[sid]["shares"]]
+                        if share_data["ciphertext"] not in existing_shares:
                             reconstruction_sessions[sid]["shares"].append(share_data)
                         
                         await broadcast_to_session(sid, {
@@ -184,13 +185,13 @@ async def multi_encrypt(req: MultiEncryptRequest):
         raise HTTPException(status_code=400, detail="No users provided")
 
     session_id = str(uuid.uuid4())[:8]
+    num_splits = req.split_size if req.split_size is not None else len(req.users)
     reconstruction_sessions[session_id] = {
         "participants": [],
         "shares": [],
-        "total_expected": len(req.users)
+        "total_expected": num_splits
     }
 
-    num_splits = req.split_size if req.split_size is not None else len(req.users)
     shares = split_secret(req.message, num_splits)
 
     caesar = CaesarCipher()
@@ -199,7 +200,8 @@ async def multi_encrypt(req: MultiEncryptRequest):
 
     results = []
 
-    for user, share in zip(req.users, shares):
+    for i, share in enumerate(shares):
+        user = req.users[i % len(req.users)]
         payload = {
             "user": user.id,
             "cipher": user.cipher,
