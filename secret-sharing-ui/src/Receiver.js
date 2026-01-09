@@ -59,7 +59,8 @@ export default function Receiver() {
             plaintext: msg.data.decrypted,
             ciphertext: msg.data.ciphertext,
             cipher: msg.data.cipher,
-            entropy: msg.data.entropy
+            entropy: msg.data.entropy,
+            index: msg.data.index
           }
         ]);
       }
